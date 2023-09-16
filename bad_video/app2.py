@@ -99,7 +99,7 @@ class ThreadingVideoCapture:
     def set(self, i, v):
         return self.video.set(i, v)
 
-RTSP_URL = "rtsp://tapocam:neural@95.84.148.126:554/stream1"
+RTSP_URL = "rtsp://tapocam:neural@192.168.0.19:554/stream2"
 
 def gen_frames():
     cap = ThreadingVideoCapture(RTSP_URL)
