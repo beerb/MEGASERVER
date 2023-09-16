@@ -8,7 +8,7 @@ import face_recognition
 import numpy as np
 import rtsp
 
-RTSP_URL = "rtsp://..."
+RTSP_URL = "rtsp://...1"
 app=Flask(__name__)
 
 work_stat = 1
