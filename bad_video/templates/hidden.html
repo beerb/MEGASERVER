@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Охранная система видеонаблюдения</title>
+    <style>
+        body {
+            background: url('/static/CCTV-Cover2.jpg') center / cover no-repeat;
+            height: 100vh; /* Заполняем всю высоту окна браузера */
+            margin: 0; /* Убираем отступы по умолчанию */
+            padding: 0; /* Убираем отступы по умолчанию */
+            backdrop-filter: blur(10px); /* Размытие фона (увеличьте значение для большего размытия) */
+            opacity: 1; /* Прозрачность (увеличьте значение от 0 до 1) */
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #000000;
+            text-shadow: 1px 1px #ffffff;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7); /* Прозрачная верхняя панель */
+            padding: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            z-index: 2; /* Поднимаем панель над контентом */
+        }
+
+        .button {
+            border: 1px solid #000000; /* Рамка кнопок */
+            padding: 5px 10px;
+            border-radius: 10px; /* Закругленные края */
+            background-color: rgba(255, 255, 255, 0.7);
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .container {
+            margin-top: 20px; /* Отступ сверху, чтобы видео не перекрывало верхнюю панель */
+            padding: 70px; /* Добавим отступы для контейнера */
+        }
+
+        .start-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 50px;
+            background-color: rgba(17, 17, 221, 0.7); /* Немного прозрачный фон кнопки */
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 1px 1px #000000;
+        }
+
+        .start-button:hover {
+            background-color: rgba(3, 3, 146, 0.9);
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar">
+    <a class="button" href="/">Главное меню</a>
+    <a class="button" href="/video">Видео режим</a>
+    <a class="button" href="/hidden">Скрытый режим</a>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <img src="{{ url_for('video_feed') }}" width="20%" style="max-height: 450px;">
+        </div>
+    </div>
+</div>
+</body>
+<p id="currentName">Текущее имя в кадре: {{ current_name1 }}</p>
+</body>
+<script>
+    // Функция для обновления значения current_name через AJAX
+    function updateCurrentName() {
+        fetch('/get_current_name')  // Здесь укажите правильный URL для получения current_name из сервера
+            .then(response => response.text())
+            .then(data => {
+                // Обновляем значение current_name на странице
+                document.getElementById('currentName').textContent = 'Текущее имя: ' + data;
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+    }
+
+    // Обновляем значение current_name каждые 5 секунд (5000 миллисекунд)
+    setInterval(updateCurrentName, 3000);
+</script>
+<body>
+    <h1>Управление</h1>
+    <style>
+        /* Стили для кнопок */
+        .red-button {
+            background-color: red;
+            color: white;
+        }
+
+        .green-button {
+            background-color: green;
+            color: white;
+        }
+    </style>
+    
+    <button id="setToZeroButton" class="red-button">Выключить</button>
+    <button id="setToOneButton" class="green-button">Включить</button>
+
+    <p>Значение переменной: <span id="variableValue">В работе</span></p>
+
+    <script>
+        // Функция, которая будет вызываться при нажатии на кнопку
+        function setToOne() {
+            // Отправляем запрос на сервер для обновления переменной
+            fetch('/set_work_stat_to_one', {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    // Если запрос успешен, обновляем значение переменной на странице
+                    document.getElementById('variableValue').textContent = 'В работе';
+                }
+            }).catch(error => {
+                console.error('Ошибка:', error);
+            });
+        }
+
+        // Назначаем обработчик события для кнопки
+        document.getElementById('setToOneButton').addEventListener('click', setToOne);
+
+        function setToZero() {
+            // Отправляем запрос на сервер для обновления переменной
+            fetch('/set_work_stat_to_zero', {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    // Если запрос успешен, обновляем значение переменной на странице
+                    document.getElementById('variableValue').textContent = 'Остановлен';
+                }
+            }).catch(error => {
+                console.error('Ошибка:', error);
+            });
+        }
+
+        // Назначаем обработчик события для кнопки
+        document.getElementById('setToOneButton').addEventListener('click', setToOne);
+        // Назначаем обработчики событий для кнопок
+        setToZeroButton.addEventListener("click", setToZero);
+        setToOneButton.addEventListener("click", setToOne);
+    </script>
+
+
+</body>
+</html>
